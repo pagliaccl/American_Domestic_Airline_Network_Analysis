@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var geoCoordMap = {
+   'ORD':[-87.907083335,41.9790972225],
+'ATL':[-84.4275,33.639166666],
+'MSP':[-93.219722225,44.884027775],
+'MDW':[-87.75222222,41.785416665],
+'DTW':[-83.348888885,42.214583335],
+'DEN':[-104.7763889,39.818055555],
+'MEM':[-89.97763889,35.04611111],
+'DFW':[-97.0366666675,32.8962499975],
+'SDF':[-85.73787037,38.17787037],
+'IND':[-86.2860416675,39.7243055575],
+'CLT':[-80.9426851867,35.2155555567],
+'IAD':[-77.45875,38.944583335],
+'PHL':[-75.24472222,39.87013889],
+'BNA':[-86.68,36.125555555],
+'BWI':[-76.6690740733,39.17537037],
+'EWR':[-74.17013889,40.694166665],
+'DCA':[-77.0375,38.8516666667],
+'STL':[-90.3648148133,38.74787037],
+'PIT':[-80.234305555,40.49402778],
+'MKE':[-87.896944444,42.948333332],
+'IAH':[-95.3404629633,29.9837037],
+'CMH':[-82.8874999967,39.99537037],
+'CVG':[-84.668194445,39.048333335],
+'MCI':[-94.71388889,39.2975],
+'RDU':[-78.78472222,35.87652778],
+'CLE':[-81.8530555533,41.4099074033],
+'LGA':[-73.874166665,40.77833333],
+'LAS':[-115.154444433,36.0799074067],
+'BOS':[-71.00625,42.363333335],
+'HPN':[-73.70763889,41.067916665],
+'OMA':[-95.89375,41.3025],
+'DAL':[-96.85212963,32.8470370333],
+'MSY':[-90.2562037067,29.99259259],
+'FLL':[-80.1518055575,26.07263889],
+'AUS':[-97.685694445,30.24625],
+'GRR':[-85.5237037067,42.8810185167],
+'SAT':[-98.4694444433,29.53361111],
+'MCO':[-81.316805555,28.430555555],
+'RFD':[-89.09486111,42.19625],
+'MIA':[-80.2874074067,25.7934259267],
+'LAX':[-118.4076389,33.9425],
+'TPA':[-82.534305555,27.97430556],
+'PHX':[-112.01055555,33.43513889],
+'JFK':[-73.7781481467,40.6394444433],
+'DAY':[-84.21972222,39.901666665],
+'IFP':[-114.5623611,35.160138885],
+'DSM':[-93.658472225,41.533958335],
+'BDL':[-72.6832638875,41.9385416675],
+'OKC':[-97.60101852,35.39277778],
+'GSP':[-82.2155555567,34.89777778],
+'BUF':[-78.7329166675,42.9406944475],
+'GPT':[-89.07013889,30.406666665],
+'SLC':[-111.9712037,40.78648148],
+'TUL':[-95.88888889,36.198055555],
+'ORF':[-76.20125,36.895277775],
+'YIP':[-83.53074074,42.2389814833],
+'PVD':[-71.42722222,41.72611111],
+'BHM':[-86.754722225,33.5632638925],
+'HOU':[-95.27875,29.64527778],
+'CHS':[-80.039722225,32.89888889],
+'JAX':[-81.68777778,30.489444445],
+'LEX':[-84.60537037,38.0377777767],
+'PIA':[-89.6892592567,40.6623148167],
+'CMI':[-88.27875,40.039305555],
+'SBN':[-86.31625,41.7064814783],
+'MLI':[-90.5072222233,41.4484259267],
+'SEA':[-122.308425967,47.4487962967],
+'MSN':[-89.33722222,43.14097222],
+'BMI':[-88.921666665,40.47958333],
+'SYR':[-76.104444445,43.110833335],
+'SFB':[-81.237083335,28.7765972225],
+'RIC':[-77.31972222,37.50527778],
+'ALB':[-73.80361111,42.7475],
+'ANC':[-149.99395835,61.173055555],
+'ICT':[-97.4329629667,37.65],
+'DPA':[-88.24666667,41.91555556],
+'ROC':[-77.671527775,43.120208335],
+'GSO':[-79.941944445,36.096666665],
+'SPI':[-89.6786111133,39.84416667],
+'LIT':[-92.227152775,34.72923611],
+'PWK':[-87.90125,42.1129166675],
+'ABQ':[-106.607962967,35.04027778],
+'II3':[-88.70638889,41.93263889],
+'DEC':[-88.867083335,39.834305555],
+'RSW':[-81.75513889,26.53611111],
+'CID':[-91.7076851833,41.8845370333],
+'BLV':[-89.843194445,38.54402778],
+'TYS':[-83.9939814833,35.81083333],
+'PDX':[-122.5959722,45.58888889],
+'FNT':[-83.7433333333,42.96592593],
+'BUR':[-118.358055567,34.2001851867],
+'CAK':[-81.44263889,40.914444445],
+'MVN':[-88.85861111,38.323194445],
+'ELP':[-106.377037033,31.8070370367],
+'UIN':[-91.1953703667,39.9433333367],
+'PWM':[-70.30712963,43.64537037],
+'MWA':[-89.01375,37.75347222],
+'FWA':[-85.189861115,40.97833333],
+'LAN':[-84.58759259,42.7789814833],
+'MDH':[-89.24944444,37.779722225],
+
+    
+};
+
+var BJData = [
+[{name:'ORD'},{name:'ATL',value:99.7580379747}],
+[{name:'ORD'},{name:'MSP',value:99.6714214376}],
+[{name:'ORD'},{name:'MDW',value:99.5930862661}],
+[{name:'ORD'},{name:'DTW',value:99.5561429882}],
+[{name:'ORD'},{name:'DEN',value:99.5382588331}],
+[{name:'ORD'},{name:'MEM',value:99.5370075985}],
+[{name:'ORD'},{name:'DFW',value:99.4159524958}],
+[{name:'ORD'},{name:'SDF',value:99.2624722281}],
+[{name:'ORD'},{name:'IND',value:99.2462016762}],
+[{name:'ORD'},{name:'CLT',value:99.0887109034}],
+    
+
+    
+];
+
+var SHData = [
+[{name:'ORD'},{name:'IAD',value:99.0771812853}],
+[{name:'ORD'},{name:'PHL',value:98.99835212}],
+[{name:'ORD'},{name:'BNA',value:98.9372434546}],
+[{name:'ORD'},{name:'BWI',value:98.9263418105}],
+[{name:'ORD'},{name:'EWR',value:98.7488725919}],
+[{name:'ORD'},{name:'DCA',value:98.7377073165}],
+[{name:'ORD'},{name:'STL',value:98.7167843972}],
+[{name:'ORD'},{name:'PIT',value:98.6574468531}],
+[{name:'ORD'},{name:'MKE',value:98.6259014382}],
+[{name:'ORD'},{name:'IAH',value:98.6049462855}],
+
+   
+];
+
+var GZData = [
+[{name:'ORD'},{name:'CMH',value:98.4424186311}],
+[{name:'ORD'},{name:'CVG',value:98.4148504148}],
+[{name:'ORD'},{name:'MCI',value:98.0012365097}],
+[{name:'ORD'},{name:'RDU',value:97.8099820511}],
+[{name:'ORD'},{name:'CLE',value:97.705714805}],
+[{name:'ORD'},{name:'LGA',value:97.695119785}],
+[{name:'ORD'},{name:'LAS',value:97.6813462984}],
+[{name:'ORD'},{name:'BOS',value:97.4525744554}],
+[{name:'ORD'},{name:'HPN',value:97.452314894}],
+[{name:'ORD'},{name:'OMA',value:96.8612911125}],
+
+   
+];
+
+var HFData = [
+[{name:'ORD'},{name:'BUR',value:89.2315241692}],
+[{name:'ORD'},{name:'CAK',value:89.0557140486}],
+[{name:'ORD'},{name:'MVN',value:88.9365575009}],
+[{name:'ORD'},{name:'ELP',value:88.8315733167}],
+[{name:'ORD'},{name:'UIN',value:88.3781450187}],
+[{name:'ORD'},{name:'PWM',value:88.2293435153}],
+[{name:'ORD'},{name:'MWA',value:88.0260454059}],
+[{name:'ORD'},{name:'FWA',value:87.8205834163}],
+[{name:'ORD'},{name:'LAN',value:87.7594595338}],
+[{name:'ORD'},{name:'MDH',value:87.7192611448}],
+];
+var planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
+
+var convertData = function (data) {
+    var res = [];
+    for (var i = 0; i < data.length; i++) {
+        var dataItem = data[i];
+        var fromCoord = geoCoordMap[dataItem[0].name];
+        var toCoord = geoCoordMap[dataItem[1].name];
+        if (fromCoord && toCoord) {
+            res.push({
+                fromName: dataItem[0].name,
+                toName: dataItem[1].name,
+                coords: [fromCoord, toCoord]
+            });
+        }
+    }
+    return res;
+};
+
+var color = ['#ffa022','yellow','#a6c84c','#46bee9'];
+var series = [];
+[['first', BJData], ['second', SHData], ['third', GZData],['tenth', HFData]].forEach(function (item, i) {
+    series.push({
+        name: item[0] + ' Top10',
+        type: 'lines',
+        zlevel: 1,
+        effect: {
+            show: true,
+            period: 6,
+            trailLength: 0.7,
+            color: '#fff',
+            symbolSize: 3
+        },
+        lineStyle: {
+            normal: {
+                color: color[i],
+                width: 0,
+                curveness: 0.2
+            }
+        },
+        data: convertData(item[1])
+    },
+    {
+        name: item[0] + ' Top10',
+        type: 'lines',
+        zlevel: 2,
+        effect: {
+            show: true,
+            period: 6,
+            trailLength: 0,
+            symbol: planePath,
+            symbolSize: 15
+        },
+        lineStyle: {
+            normal: {
+                color: color[i],
+                width: 1,
+                opacity: 0.4,
+                curveness: 0.2
+            }
+        },
+        data: convertData(item[1])
+    },
+    {
+        name: item[0] + ' Top10',
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        zlevel: 2,
+        rippleEffect: {
+            brushType: 'stroke'
+        },
+        label: {
+            normal: {
+                show: true,
+                position: 'right',
+                formatter: '{b}'
+            }
+        },
+        symbolSize: function (val) {
+            return val[2] / 8;
+        },
+        itemStyle: {
+            normal: {
+                color: color[i]
+            }
+        },
+        data: item[1].map(function (dataItem) {
+            return {
+                name: dataItem[1].name,
+                value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value])
+            };
+        })
+    });
+});
+
+option = {
+    backgroundColor: '#404a59',
+    title : {
+        text: 'Most Likely Airports Connected From ORD',
+        subtext: '',
+        left: 'center',
+        textStyle : {
+            color: '#fff'
+        }
+    },
+    tooltip : {
+        trigger: 'item'
+    },
+    legend: {
+        orient: 'vertical',
+        top: 'bottom',
+        left: 'right',
+        data:['first Top10', 'second Top10', 'third Top10', 'tenth Top10'],
+        textStyle: {
+            color: '#fff'
+        },
+        selectedMode: 'single'
+    },
+    geo: {
+        map: 'world',
+        label: {
+            emphasis: {
+                show: false
+            }
+        },
+        roam: true,
+        itemStyle: {
+            normal: {
+                areaColor: '#323c48',
+                borderColor: '#404a59'
+            },
+            emphasis: {
+                areaColor: '#2a333d'
+            }
+        }
+    },
+    series: series
+};;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
